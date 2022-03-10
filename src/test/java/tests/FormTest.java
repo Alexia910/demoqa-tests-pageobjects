@@ -1,14 +1,15 @@
 package tests;
 
 import com.codeborne.selenide.Configuration;
+import helpers.Attach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import pages.RegistrationPage;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static io.qameta.allure.Allure.step;
 
 public class FormTest {
 
@@ -23,7 +24,7 @@ public class FormTest {
     String year = "1999";
     String subject = "Maths";
     String hobby = "Reading";
-    String namePicture = "picture.jpg";
+    // String namePicture = "picture.jpg";
     String adress = "Minsk";
     String state = "NCR";
     String city = "Delhi";
@@ -35,27 +36,100 @@ public class FormTest {
     static void beforeAll() {
         Configuration.baseUrl = "https://demoqa.com";
         Configuration.browserSize = "1920x1080";
+
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("enableVNC", true);
+        capabilities.setCapability("enableVideo", true);
+        Configuration.browserCapabilities = capabilities;
+        Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub";
+    }
+
+    @AfterEach
+    void addAttachments() {
+        Attach.screenshotAs("Last screenshot");
+        Attach.pageSource();
+        Attach.browserConsoleLogs();
+        Attach.addVideo();
+        closeWebDriver();
     }
 
     @Test
     void successFillTest() {
-        registrationPage.openPage();
-        registrationPage.verifyHeader();
-        registrationPage.setFirstName(firstName);
-        registrationPage.setLastName(lastName);
-        registrationPage.setUserEmail(userEmail);
-        registrationPage.setGender(gender);
-        registrationPage.setUserNumber(userNumber);
-        registrationPage.setBirthDate(day, month, year);
-        registrationPage.setSubject(subject);
-        registrationPage.setHobby(hobby);
-        registrationPage.pictureUpload(namePicture);
-        registrationPage.setAdress(adress);
-        registrationPage.setState(state);
-        registrationPage.setCity(city);
-        registrationPage.sendForm();
 
-        registrationPage.verifyForm(userName, userEmail, gender, userNumber, date, subject, hobby, namePicture, adress, state, city);
+        step("Открыть страницу", () -> {
+            registrationPage.openPage();
+        });
+
+        step("Проверить хэдер", () -> {
+            registrationPage.verifyHeader();
+        });
+
+        step("Ввести имя", () -> {
+            registrationPage.setFirstName(firstName);
+        });
+
+        step("Ввести фамилию", () -> {
+            registrationPage.setLastName(lastName);
+        });
+
+        step("Ввести почту", () -> {
+            registrationPage.setUserEmail(userEmail);
+        });
+
+        step("Выбрать пол", () -> {
+            registrationPage.setGender(gender);
+        });
+
+        step("Ввести номер телефона", () -> {
+            registrationPage.setUserNumber(userNumber);
+        });
+
+        step("Выбрать дату рождения", () -> {
+            registrationPage.setBirthDate(day, month, year);
+        });
+
+        step("Ввести предмет", () -> {
+            registrationPage.setSubject(subject);
+        });
+
+        step("Выбрать хобби", () -> {
+            registrationPage.setHobby(hobby);
+        });
+
+        /*  step("Загрузить файл", () -> {
+            registrationPage.pictureUpload(namePicture);
+        }); */
+
+        step("Ввести адрес", () -> {
+            registrationPage.setAdress(adress);
+        });
+
+        step("Выбрать штат", () -> {
+            registrationPage.setState(state);
+        });
+
+        step("Выбрать город", () -> {
+            registrationPage.setCity(city);
+        });
+
+        step("Отправить форму", () -> {
+            registrationPage.sendForm();
+        });
+
+        step("Проверить форму", () -> {
+            registrationPage.verifyForm(
+                    userName,
+                    userEmail,
+                    gender,
+                    userNumber,
+                    date,
+                    subject,
+                    hobby,
+                   // namePicture,
+                    adress,
+                    state,
+                    city);
+        });
 
     }
 }

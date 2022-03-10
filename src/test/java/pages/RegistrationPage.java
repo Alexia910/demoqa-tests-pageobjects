@@ -86,7 +86,7 @@ public class RegistrationPage {
                            String date,
                            String subject,
                            String hobby,
-                           String namePicture,
+                          // String namePicture,
                            String adress,
                            String state,
                            String city) {
@@ -97,7 +97,7 @@ public class RegistrationPage {
                text(date),
                text(subject),
                text(hobby),
-               text(namePicture),
+              // text(namePicture),
                text(adress),
                text(state + " " + city));
     };
